@@ -1,77 +1,164 @@
-#include "PFM.hpp"
-#include "pfm_operators.hpp"
+#include <iostream>
+#include <string>
+#include <vector>
+
+#include "FPM.hpp"
+#include "fpm_operators.hpp"
 
 
-// THIS SHOWS ONLY HOW TO USE THE FUNCTIONS. IF YOUD LIKE TO SEE IT USED IN A NORMAL WAY VISIT main2.cpp
-
-
+// only demonstrates how to use every function. to see it in normal use go to main2.cpp
 int main() {
-    // Initialize users and assign their levels
-    userLevel["Alice"] = USER;
-    userLevel["Bob"] = ADMIN;
-    userLevel["Charlie"] = OWNER;
+    // Initialize users
+    userLevel["James"] = USER;
+    userLevel["Nalice"] = ADMIN;
+    userLevel["Scot"] = ADMIN;
+    userLevel["Marn"] = OWNER;
 
-    // Create PFM objects for files with different protection levels
-    PFM file1(PL_NONE);
-    PFM file2(PL_MED);
-    PFM file3(PL_READONLY);
-    PFM file4(PL_HIDDEN);
+    // Create files
+    FPM file1(PL_NONE);
+    FPM file2(PL_MED);
+    FPM file3(PL_READONLY);
+    FPM file4(PL_HIDDEN);
 
-    // Print access reports for each user before promotions
-    for (auto& [name, level] : userLevel) {
-        std::cout << name << ":\n" << file2.AccessReport(level) << "\n";
+    std::vector<FPM> files = {file1, file2, file3, file4};
+    std::vector<std::string> filenames = {"file1", "file2", "file3",
+    "file4"};
+
+    std::string currentUser;
+
+    std::cout << "Enter your username: " << "\n";
+    std::cin >> currentUser;
+
+    if (userLevel.find(currentUser) == userLevel.end()){
+        std::cout << "User not found." << "\n";
+
+        return 0;
     }
 
-    // Create a dummy PFM object to use promotion functions
-    PFM fileDummy;
+    USERS level = userLevel[currentUser];
 
-    // Promote Alice from USER to ADMIN
-    fileDummy.promoteToAdmin("Alice");
+    std::cout << "Welcome " << currentUser << "! Your level is: "
+    << FPM().getPermissionLevel_user(level) << "\n";
 
-    // Promote Bob from ADMIN to OWNER (only if no other OWNER exists)
-    fileDummy.promoteToOwner("Bob");
+    while (true){
+        std::cout << "Files available: \n";
 
-    // Print access reports for each user after promotions
-    for (auto& [name, level] : userLevel) {
-        std::cout << name << ":\n" << file2.AccessReport(level) << "\n";
+        for (size_t i = 0; i < files.size(); i++){
+            if (files[i].canSeeFile(level)){
+                std::cout << i << ": " << filenames[i] << "\n";
+            }
+        }
+
+        int choice;
+
+        std::cout << "Select a file index (-1 to quit): " << "\n";
+        std::cin >> choice;
+
+        if (choice == -1){
+            break;
+        }
+
+        if (choice < 0 || choice >= files.size()){
+            std::cout << "Invalid file index." << "\n";
+
+            continue;
+        }
+
+        std::cout << "Actions: \n";
+        std::cout << "1: View Access Report \n";
+        std::cout << "2: Try Modify \n";
+        std::cout << "3: Try Rename \n";
+        std::cout << "4: Try Delete \n";
+
+        if (level == ADMIN || level == OWNER){
+            std::cout << "5: Promote user to Admin \n";
+        }
+
+        if (level == OWNER){
+            std::cout << "6: Promote Admin to Owner \n";
+            std::cout << "7: Lock File \n";
+            std::cout << "8: Unlock File \n";
+        }
+
+        int action;
+
+        std::cout << "Choose action: \n";
+        std::cin >> action;
+
+        switch (action){
+            case 1:
+                std::cout << files[choice].AccessReport(level) << "\n";
+
+                break;
+
+            case 2:
+                std::cout << "Modify " << (
+                    files[choice].canModifyFile(level) ? "succeeded!\n"
+                    : "failed!\n"
+                );
+
+                break;
+
+            case 3:
+                std::cout << "Rename " << (
+                    files[choice].canRenameFile(level) ? "suceeded!\n"
+                    : "failed!\n"
+                );
+
+                break;
+
+            case 4:
+                std::cout << "Delete " << (
+                    files[choice].canDeleteFile(level) ? "suceeded!\n"
+                    : "failed!\n"
+                );
+
+                break;
+
+            case 5:
+                if (level == ADMIN || level == OWNER){
+                    std::string uname;
+
+                    std::cout << "Enter username to promote: \n";
+                    std::cin >> uname;
+
+                    files[0].promoteToAdmin(uname);
+
+                    std::cout << uname << "promoted.\n";
+                }
+
+                break;
+
+            case 6:
+                 if (level == OWNER){
+                    std::string uname;
+
+                    std::cout << "Enter admin username to promote to Owner: ";
+                    std::cin >> uname;
+
+                    files[0].promoteToOwner(uname);
+
+                    std::cout << uname << " promoted to Owner!\n";
+                }
+
+                break;
+
+            case 7:
+                if (level == OWNER){
+                    files[choice].lockFile(level);
+                }
+
+                break;
+
+            case 8:
+                if (level == OWNER){
+                    files[choice].unlockFile(level);
+                }
+
+                break;
+
+            default:
+                std::cout << "Invalid action.\n";
+        }
     }
-
-    // Attempt to change file1 permissions to FULL using OWNER
-    try {
-        file1.setPermissions(PL_FULL, OWNER);
-        std::cout << "New file1 level: " << file1.getPermissionLevel_file() << "\n";
-    } catch (const std::invalid_argument& e) {
-        std::cout << e.what() << "\n";
-    }
-
-    // Attempt to change file2 permissions using USER (should fail)
-    try {
-        file2.setPermissions(PL_READONLY, USER);
-    } catch (const std::invalid_argument& e) {
-        std::cout << e.what() << "\n";
-    }
-
-    // Check individual file permissions for specific users
-    std::cout << "Can USER delete file2?: " << (file2.canDeleteFile(USER) ? "Yes" : "No") << "\n";
-    std::cout << "Can ADMIN see file3?: " << (file3.canSeeFile(ADMIN) ? "Yes" : "No") << "\n";
-    std::cout << "Can OWNER modify file3?: " << (file3.canModifyFile(OWNER) ? "Yes" : "No") << "\n";
-    std::cout << "Is file4 hidden from USER?: " << (file4.isHidden(USER) ? "Yes" : "No") << "\n";
-
-    // Create another file to demonstrate file comparison
-    PFM anotherFile(PL_MED);
-
-    // Compare files
-    std::cout << "file2 == anotherFile? " << (file2 == anotherFile ? "Yes" : "No") << "\n";
-    std::cout << "file1 != file3? " << (file1 != file3 ? "Yes" : "No") << "\n";
-
-    // attempt to lock file
-    file1.lockFile(userLevel["Alice"]); // NOT ALLOWED, THROWS EXCEPTION
-
-    // attempt to lock file now
-    file1.lockFile(userLevel["Charlie"]); // ALLOWED, CHARLIE IS OWNER
-
-    // attempt to UNLOCK file now
-    file1.unlockFile(userLevel["Charlie"]); // ALLOWED, CHARLIE IS OWNER
-
-    return 0;
 }
