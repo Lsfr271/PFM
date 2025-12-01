@@ -13,7 +13,10 @@
 #pragma once
 
 #include <iostream>
+#include <map>
 #include <stdexcept>
+#include <algorithm>
+
 
 enum USERS {
     /* User permissions, which is 0 (basic permissions, can delete user-created
@@ -27,6 +30,7 @@ enum USERS {
     /* Owner permissions, which is 2 (has full control & ability of admin) */
     OWNER = 2
 };
+
 
 enum FILES {
     /*
@@ -61,6 +65,8 @@ enum FILES {
     PL_SYSTEM = 5,
 };
 
+extern std::map<std::string, USERS> userLevel;
+
 struct PFM {
     public:
         FILES _fp;
@@ -78,6 +84,8 @@ struct PFM {
         bool isAccessible(USERS user);
 
         void setPermissions(FILES newPerm, USERS user);
+        void promoteToAdmin(const std::string& name);
+        void promoteToOwner(const std::string& name);
 
         std::string getPermissionLevel_user(USERS user);
         std::string getPermissionLevel_file();
