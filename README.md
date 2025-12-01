@@ -1,4 +1,4 @@
-# PFM
+# FPM
 
 ## VERSION: 1.0
 
@@ -13,8 +13,8 @@ This API allows you to check file permissions. There can be 3 levels, USER, ADMI
 3- Including it:
 
 ```cpp
-#include "../<yourFolder>/PFM.hpp"
-#include "../<yourFolder>/pfm_operators.hpp"
+#include "../<yourFolder>/FPM.hpp"
+#include "../<yourFolder>/fpm_operators.hpp"
 
 int main() {
 // your code
