@@ -74,6 +74,8 @@ int main() {
 
         if (level == OWNER){
             std::cout << "6: Promote Admin to Owner \n";
+            std::cout << "7: Lock File \n";
+            std::cout << "8: Unlock File \n";
         }
 
         int action;
@@ -135,6 +137,20 @@ int main() {
                     files[0].promoteToOwner(uname);
 
                     std::cout << uname << " promoted to Owner!\n";
+                }
+
+                break;
+
+            case 7:
+                if (level == OWNER){
+                    files[choice].lockFile(level);
+                }
+
+                break;
+
+            case 8:
+                if (level == OWNER){
+                    files[choice].unlockFile(level);
                 }
 
                 break;
