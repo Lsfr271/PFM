@@ -1,6 +1,8 @@
 #include "PFM.hpp"
 #include "pfm_operators.hpp"
 
+// THIS SHOWS ONLY HOW TO USE THE FUNCTIONS. IF YOUD LIKE TO SEE IT USED IN A NORMAL WAY VISIT main2.cpp
+
 int main() {
     // Initialize users and assign their levels
     userLevel["Alice"] = USER;
