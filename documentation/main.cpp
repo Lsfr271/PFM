@@ -1,7 +1,9 @@
 #include "PFM.hpp"
 #include "pfm_operators.hpp"
 
+
 // THIS SHOWS ONLY HOW TO USE THE FUNCTIONS. IF YOUD LIKE TO SEE IT USED IN A NORMAL WAY VISIT main2.cpp
+
 
 int main() {
     // Initialize users and assign their levels
@@ -61,6 +63,15 @@ int main() {
     // Compare files
     std::cout << "file2 == anotherFile? " << (file2 == anotherFile ? "Yes" : "No") << "\n";
     std::cout << "file1 != file3? " << (file1 != file3 ? "Yes" : "No") << "\n";
+
+    // attempt to lock file
+    file1.lockFile(userLevel["Alice"]); // NOT ALLOWED, THROWS EXCEPTION
+
+    // attempt to lock file now
+    file1.lockFile(userLevel["Charlie"]); // ALLOWED, CHARLIE IS OWNER
+
+    // attempt to UNLOCK file now
+    file1.unlockFile(userLevel["Charlie"]); // ALLOWED, CHARLIE IS OWNER
 
     return 0;
 }
