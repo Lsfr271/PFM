@@ -8,8 +8,8 @@
       "args": [
         "-std=c++20",
         "${file}",
-        "<THIS PATH GOES TO THE .CPP FILE CALLED PFM.cpp>",
-        "-I", "<THIS PATH IS WHERE THE HEADER FILES ARE INCLUDED. ONLY STOP AT THE FOLDER. (HEADERS: PFM.hpp pfm_operators.hpp)",
+        "<THIS PATH GOES TO THE .CPP FILE CALLED FPM.cpp>",
+        "-I", "<THIS PATH IS WHERE THE HEADER FILES ARE INCLUDED. ONLY STOP AT THE FOLDER. (HEADERS: FPM.hpp fpm_operators.hpp)",
         "-o",
         "${fileDirname}\\${fileBasenameNoExtension}.exe"
         ],
