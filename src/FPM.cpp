@@ -114,6 +114,10 @@ void FPM::unlockFile(USERS user) {
     _fp = PL_NONE;
 }
 
+void FPM::setOwner(const std::string &name) {
+    promoteToOwner(name);
+}
+
 std::string FPM::getPermissionLevel_user(USERS user) {
     if (user == USER){
         return "User Permission level.";
@@ -158,4 +162,75 @@ std::string FPM::AccessReport(USERS user) {
     report += "Can delete: " + std::string(canDeleteFile(user) ? "Yes" : "No") + "\n";
 
     return report;
+}
+
+std::string FPM::getOwner() {
+    for (const auto& [name, level] : userLevel){
+        if (level == OWNER){
+            return name;
+        }
+
+        return std::string("No owner found.");
+    }
+
+    return "(IGNORE)";
+}
+
+void FPM::demoteToUser(const std::string& name)
+{
+    auto it = userLevel.find(name);
+
+    if (it == userLevel.end())
+    {
+        throw std::invalid_argument("User not found.\n");
+    }
+
+    if (it->second != ADMIN)
+    {
+        throw std::invalid_argument("The user speciifed"
+        " must be an admin.\n");
+    }
+
+    it->second = USER;
+}
+
+void FPM::logAction(USERS user, const std::string& action)
+{
+    auto now = std::chrono::system_clock::now();
+    std::time_t t_now = std::chrono::system_clock::to_time_t(now);
+
+    std::string userStr;
+
+    switch (user)
+    {
+        case USER:
+            userStr = "USER";
+
+            break;
+        case ADMIN:
+            userStr = "ADMIN";
+
+            break;
+        case OWNER:
+            userStr = "OWNER";
+
+            break;
+        default:
+            userStr = "UNKNOWN";
+
+            break;
+    }
+
+    std::string entry = "[" + std::string(std::ctime(&t_now));
+
+    entry.pop_back();
+
+    entry += "] " + userStr + " performed: " + action;
+
+    _history.push_back(entry);
+}
+
+std::vector<std::string> FPM::getHistory() const
+{
+    return _history;
 }
