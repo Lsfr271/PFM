@@ -16,6 +16,9 @@
 #include <map>
 #include <stdexcept>
 #include <algorithm>
+#include <vector>
+#include <chrono>
+#include <ctime>
 
 
 enum USERS {
@@ -68,6 +71,9 @@ enum FILES {
 extern std::map<std::string, USERS> userLevel;
 
 struct FPM {
+    private:
+        std::vector<std::string> _history;
+        
     public:
         FILES _fp;
 
@@ -88,11 +94,16 @@ struct FPM {
         void promoteToOwner(const std::string& name);
         void lockFile(USERS user);
         void unlockFile(USERS user);
-
+        void setOwner(const std::string& name);
+        void demoteToUser(const std::string& name);
+        void logAction(USERS user, const std::string& action);
 
         std::string getPermissionLevel_user(USERS user);
         std::string getPermissionLevel_file();
         std::string AccessReport(USERS user);
+        std::string getOwner();
+
+        std::vector<std::string> getHistory() const;
 };
 
 #endif
