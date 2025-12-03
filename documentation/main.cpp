@@ -1,164 +1,99 @@
+#include "../PFM/fpm_operators.hpp"
+#include "../PFM/FPM.hpp"
 #include <iostream>
-#include <string>
-#include <vector>
 
-#include "FPM.hpp"
-#include "fpm_operators.hpp"
-
-
-// only demonstrates how to use every function. to see it in normal use go to main2.cpp
 int main() {
-    // Initialize users
-    userLevel["James"] = USER;
-    userLevel["Nalice"] = ADMIN;
-    userLevel["Scot"] = ADMIN;
-    userLevel["Marn"] = OWNER;
+    // Setup users
+    userLevel["Alice"] = USER;
+    userLevel["Bob"] = ADMIN;
+    userLevel["Charlie"] = OWNER;
 
-    // Create files
-    FPM file1(PL_NONE);
-    FPM file2(PL_MED);
-    FPM file3(PL_READONLY);
-    FPM file4(PL_HIDDEN);
+    // Create a file with no protection
+    FPM file(PL_NONE);
 
-    std::vector<FPM> files = {file1, file2, file3, file4};
-    std::vector<std::string> filenames = {"file1", "file2", "file3",
-    "file4"};
+    std::cout << "=== FPM Tutorial ===\n\n";
 
-    std::string currentUser;
+    // 1. Check who can see the file
+    std::cout << "Can Alice see the file? "
+              << (file.canSeeFile(userLevel["Alice"]) ? "Yes" : "No") << "\n";
+    std::cout << "Can Bob see the file? "
+              << (file.canSeeFile(userLevel["Bob"]) ? "Yes" : "No") << "\n";
+    std::cout << "Can Charlie see the file? "
+              << (file.canSeeFile(userLevel["Charlie"]) ? "Yes" : "No") << "\n";
+    file.logAction(OWNER, "Checked who can see the file");
 
-    std::cout << "Enter your username: " << "\n";
-    std::cin >> currentUser;
-
-    if (userLevel.find(currentUser) == userLevel.end()){
-        std::cout << "User not found." << "\n";
-
-        return 0;
+    // 2. Modify and rename file
+    if (file.canModifyFile(userLevel["Alice"])) {
+        std::cout << "Alice modifies the file.\n";
+        file.logAction(USER, "Modified the file");
+    }
+    if (file.canRenameFile(userLevel["Bob"])) {
+        std::cout << "Bob renames the file.\n";
+        file.logAction(ADMIN, "Renamed the file");
     }
 
-    USERS level = userLevel[currentUser];
-
-    std::cout << "Welcome " << currentUser << "! Your level is: "
-    << FPM().getPermissionLevel_user(level) << "\n";
-
-    while (true){
-        std::cout << "Files available: \n";
-
-        for (size_t i = 0; i < files.size(); i++){
-            if (files[i].canSeeFile(level)){
-                std::cout << i << ": " << filenames[i] << "\n";
-            }
-        }
-
-        int choice;
-
-        std::cout << "Select a file index (-1 to quit): " << "\n";
-        std::cin >> choice;
-
-        if (choice == -1){
-            break;
-        }
-
-        if (choice < 0 || choice >= files.size()){
-            std::cout << "Invalid file index." << "\n";
-
-            continue;
-        }
-
-        std::cout << "Actions: \n";
-        std::cout << "1: View Access Report \n";
-        std::cout << "2: Try Modify \n";
-        std::cout << "3: Try Rename \n";
-        std::cout << "4: Try Delete \n";
-
-        if (level == ADMIN || level == OWNER){
-            std::cout << "5: Promote user to Admin \n";
-        }
-
-        if (level == OWNER){
-            std::cout << "6: Promote Admin to Owner \n";
-            std::cout << "7: Lock File \n";
-            std::cout << "8: Unlock File \n";
-        }
-
-        int action;
-
-        std::cout << "Choose action: \n";
-        std::cin >> action;
-
-        switch (action){
-            case 1:
-                std::cout << files[choice].AccessReport(level) << "\n";
-
-                break;
-
-            case 2:
-                std::cout << "Modify " << (
-                    files[choice].canModifyFile(level) ? "succeeded!\n"
-                    : "failed!\n"
-                );
-
-                break;
-
-            case 3:
-                std::cout << "Rename " << (
-                    files[choice].canRenameFile(level) ? "suceeded!\n"
-                    : "failed!\n"
-                );
-
-                break;
-
-            case 4:
-                std::cout << "Delete " << (
-                    files[choice].canDeleteFile(level) ? "suceeded!\n"
-                    : "failed!\n"
-                );
-
-                break;
-
-            case 5:
-                if (level == ADMIN || level == OWNER){
-                    std::string uname;
-
-                    std::cout << "Enter username to promote: \n";
-                    std::cin >> uname;
-
-                    files[0].promoteToAdmin(uname);
-
-                    std::cout << uname << "promoted.\n";
-                }
-
-                break;
-
-            case 6:
-                 if (level == OWNER){
-                    std::string uname;
-
-                    std::cout << "Enter admin username to promote to Owner: ";
-                    std::cin >> uname;
-
-                    files[0].promoteToOwner(uname);
-
-                    std::cout << uname << " promoted to Owner!\n";
-                }
-
-                break;
-
-            case 7:
-                if (level == OWNER){
-                    files[choice].lockFile(level);
-                }
-
-                break;
-
-            case 8:
-                if (level == OWNER){
-                    files[choice].unlockFile(level);
-                }
-
-                break;
-
-            default:
-                std::cout << "Invalid action.\n";
-        }
+    // 3. Delete file
+    if (file.canDeleteFile(userLevel["Alice"])) {
+        std::cout << "Alice deletes the file.\n";
+        file.logAction(USER, "Deleted the file");
+    } else {
+        std::cout << "Alice cannot delete the file.\n";
+        file.logAction(USER, "Attempted to delete file but failed");
     }
+
+    // 4. Lock and unlock the file (OWNER only)
+    std::cout << "Charlie locks the file (read-only)...\n";
+    file.lockFile(userLevel["Charlie"]);
+    file.logAction(OWNER, "Locked the file");
+
+    std::cout << "Charlie unlocks the file...\n";
+    file.unlockFile(userLevel["Charlie"]);
+    file.logAction(OWNER, "Unlocked the file");
+
+    // 5. Change file permissions (OWNER only)
+    std::cout << "Charlie sets file protection to PL_MED.\n";
+    file.setPermissions(PL_MED, userLevel["Charlie"]);
+    file.logAction(OWNER, "Changed file protection to PL_MED");
+
+    // 6. Promote users
+    std::cout << "Alice promoted to Admin.\n";
+    file.promoteToAdmin("Alice");
+    file.logAction(OWNER, "Promoted Alice to Admin");
+
+    std::cout << "Bob promoted to Owner (Charlie demoted automatically).\n";
+    file.promoteToOwner("Bob");
+    file.logAction(OWNER, "Promoted Bob to Owner");
+
+    // 7. Demote user
+    std::cout << "Alice demoted to User.\n";
+    file.demoteToUser("Alice");
+    file.logAction(OWNER, "Demoted Alice to User");
+
+    // 8. Check owner and full control
+    std::cout << "Current owner: " << file.getOwner() << "\n";
+    std::cout << "Does Bob have full control? "
+              << (file.hasFullControl(userLevel["Bob"]) ? "Yes" : "No") << "\n";
+    file.logAction(OWNER, "Checked owner and full control");
+
+    // 9. Check if file is hidden or protected
+    std::cout << "Is the file hidden for Alice? "
+              << (file.isHidden(userLevel["Alice"]) ? "Yes" : "No") << "\n";
+    std::cout << "Is the file protected? "
+              << (file.isProtected() ? "Yes" : "No") << "\n";
+    file.logAction(OWNER, "Checked hidden/protected status");
+
+    // 10. Access report
+    std::cout << "\nAccess Report for Bob:\n";
+    std::cout << file.AccessReport(userLevel["Bob"]) << "\n";
+    file.logAction(OWNER, "Viewed access report");
+
+    // 11. View history
+    std::cout << "\n--- File History ---\n";
+    for (const auto& entry : file.getHistory()) {
+        std::cout << entry << "\n";
+    }
+
+    std::cout << "\n=== Tutorial Complete ===\n";
+
+    return 0;
 }
