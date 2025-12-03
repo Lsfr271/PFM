@@ -3,6 +3,8 @@
 #include <vector>
 #include <string>
 
+/* NOTE: THIS WAS MADE BY AI, I AM TOO LAZY TO CODE A GAME */
+
 int main() {
     // Setup users
     userLevel["Alice"] = USER;
