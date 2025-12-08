@@ -8,7 +8,7 @@ This API allows you to check file permissions. There can be 3 levels, USER, ADMI
 
 # GCC/G++
 
-1- Copy the files from include and src to one main folder. Name it whatever you want (the folder). 
+1- Copy the files from include and src to one main folder. Name it whatever you want (the folder) or extract the .rar from the `releases`. 
 
 2- Go to compiling folder. It will teach you to build tasks.json and launch.json, c_cpp_properties.json if needed.
 
