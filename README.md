@@ -41,7 +41,7 @@ target_link_libraries(app PRIVATE fpm)
 
 3- Build the project with commands:
 
-```
+```powershell
 cmake -S . -B build
 cmake --build build
 ```
