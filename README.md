@@ -25,9 +25,9 @@ int main() {
 
 # CMAKE
 
-1- Copy the files from include/ and src/ into a folder inside your project (name the folder whatever you want), or download the .rar from Releases and extract it.
+1- Copy the files from `include/` and `src/` into a folder inside your project (name the folder whatever you want), or download the `.rar` from Releases and extract it.
 
-2- In your projects CMakeLists.txt, add FPM as a library:
+2- In your projects `CMakeLists.txt`, add FPM as a library:
 
 ```cmake
 add_subdirectory(<path_to_FPM_folder>)
