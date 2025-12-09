@@ -41,6 +41,8 @@ int main() {
 }
 ```
 
+5- optional; you can hit f7 to compile and run.
+
 # CMAKE
 
 1- Extract the `.rar` from `Version 1.0.3` in `Releases`.
