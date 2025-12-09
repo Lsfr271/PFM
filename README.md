@@ -34,8 +34,8 @@ YourRootProject/
 5- After that, Include it like:
 
 ```cpp
-#include "FPM.hpp" // if it dosent work do ../PFM/FPM.hpp
-#include "fpm_operators.hpp" // if it dosent work do ../PFM/fpm_operators.hpp
+#include "FPM.hpp" // if it dosent work do ../FPM/FPM.hpp
+#include "fpm_operators.hpp" // if it dosent work do ../FPM/fpm_operators.hpp
 
 int main() {
 // your code
