@@ -3,7 +3,7 @@
 ## DESCRIPTION
 This API allows you to check file permissions. There can be 3 levels, USER, ADMIN, and OWNER. User has low-control, Admin has moderate control, and Owner has full control. There can only be 1 owner.
 
-## HOW TO INSTALL (GCC/G++ && CMAKE)
+# HOW TO INSTALL (GCC/G++ && CMAKE)
 
 ## MANDATORY NOTES YOU NEED TO READ
 - FOR CMAKE USE VERSION 1.0.3
