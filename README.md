@@ -90,7 +90,8 @@ YourRootProject/
             fpm_operators.hpp
         src/
             FPM.cpp
-    .vscode
+    .vscode/
+        tasks.json
 ```
 
 5- optional; you can hit f7 to build and run.
