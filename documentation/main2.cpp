@@ -3,8 +3,6 @@
 #include <vector>
 #include <string>
 
-/* NOTE: THIS WAS MADE BY AI, I AM TOO LAZY TO CODE A GAME */
-
 int main() {
     // Setup users
     userLevel["Alice"] = USER;
@@ -14,12 +12,14 @@ int main() {
     FPM file(PL_NONE);
 
     std::string currentUser;
+    
     std::cout << "Enter your username (Alice, Bob, Charlie): ";
     std::cin >> currentUser;
 
     USERS user = userLevel[currentUser];
 
     bool running = true;
+    
     while (running) {
         std::cout << "\n--- File Management Game ---\n";
         std::cout << "File status: " << file.getPermissionLevel_file() << "\n";
@@ -96,31 +96,43 @@ int main() {
 
                 case 7: {
                     std::string target;
+                    
                     std::cout << "Enter username to promote to Admin: ";
                     std::cin >> target;
+                    
                     file.promoteToAdmin(target);
+                    
                     std::cout << target << " promoted to Admin.\n";
                     file.logAction(user, "Promoted " + target + " to Admin");
+                    
                     break;
                 }
 
                 case 8: {
                     std::string target;
+                    
                     std::cout << "Enter username to promote to Owner: ";
                     std::cin >> target;
+                    
                     file.promoteToOwner(target);
+                    
                     std::cout << target << " promoted to Owner.\n";
                     file.logAction(user, "Promoted " + target + " to Owner");
+                    
                     break;
                 }
 
                 case 9: {
                     std::string target;
+                    
                     std::cout << "Enter username to demote to User: ";
                     std::cin >> target;
+                    
                     file.demoteToUser(target);
+                    
                     std::cout << target << " demoted to User.\n";
                     file.logAction(user, "Demoted " + target + " to User");
+                    
                     break;
                 }
 
@@ -131,9 +143,11 @@ int main() {
 
                 case 11: {
                     std::cout << "--- File History ---\n";
+                    
                     for(const auto& entry : file.getHistory()) {
                         std::cout << entry << "\n";
                     }
+                    
                     break;
                 }
 
@@ -146,6 +160,7 @@ int main() {
             }
         } catch (const std::exception& e) {
             std::cout << "Error: " << e.what() << "\n";
+            
             file.logAction(user, std::string("Exception: ") + e.what());
         }
     }
