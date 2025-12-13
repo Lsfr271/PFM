@@ -86,6 +86,7 @@ YourRootProject/
         main.cpp # YOUR main file
 
     FPM/ # THE EXTRACTED .RAR FILE
+        CMakeLists.txt # THE EXTRACTED CMAKELISTS
         include/
             FPM.hpp
             fpm_operators.hpp
