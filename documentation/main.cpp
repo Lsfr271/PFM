@@ -89,11 +89,10 @@ int main() {
 
     // 11. View history
     std::cout << "\n--- File History ---\n";
+    
     for (const auto& entry : file.getHistory()) {
         std::cout << entry << "\n";
     }
-
-    std::cout << "\n=== Tutorial Complete ===\n";
 
     return 0;
 }
